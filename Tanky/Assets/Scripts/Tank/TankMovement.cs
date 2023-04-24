@@ -1,29 +1,25 @@
-﻿using System;
-using System.Linq.Expressions;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using UnityEngine;
 
 public class TankMovement : MonoBehaviour
 {
     public int m_PlayerNumber = 1;
     public float m_Speed = 12f;
+    public float m_JumpSpeed = 20f;
     public float m_TurnSpeed = 180f;
     public AudioSource m_MovementAudio;
     public AudioClip m_EngineIdling;
     public AudioClip m_EngineDriving;
     public float m_PitchRange = 0.2f;
-    public float m_JumpSpeed = 50f;
-    public bool m_IsGrounded = true;
 
-
+    private string m_JumpButton;
     private string m_MovementAxisName;
     private string m_TurnAxisName;
-    private string m_JumpName;
     private Rigidbody m_Rigidbody;
     private float m_MovementInputValue;
     private float m_TurnInputValue;
-    private float m_JumpInputValue;
     private float m_OriginalPitch;
+    private float m_JumpInputValue;
+    private bool isGrounded;
 
 
     private void Awake()
@@ -51,7 +47,7 @@ public class TankMovement : MonoBehaviour
     {
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
-        m_JumpName = "Jump" + m_PlayerNumber;
+        m_JumpButton = "Jump" + m_PlayerNumber;
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }
@@ -61,7 +57,7 @@ public class TankMovement : MonoBehaviour
     {
         m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
         m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
-        m_JumpInputValue = Input.GetAxis(m_JumpName);
+        m_JumpInputValue = Input.GetAxis(m_JumpButton);
         EngineAudio();
     }
 
@@ -88,10 +84,8 @@ public class TankMovement : MonoBehaviour
         }
     }
 
-
     private void FixedUpdate()
     {
-        m_IsGrounded = m_Rigidbody.velocity.y < 2;
         Move();
         Turn();
         Jump();
@@ -107,11 +101,8 @@ public class TankMovement : MonoBehaviour
 
     private void Jump()
     {
-        if (m_IsGrounded) // check if the tank is on the ground
-        {
-            m_Rigidbody.AddForce(Vector3.up * m_JumpSpeed * m_JumpInputValue * Time.deltaTime,
-                ForceMode.Impulse); // apply a vertical force to make the tank jump
-        }
+        Vector3 jump = transform.up * m_JumpInputValue * m_JumpSpeed * Time.deltaTime;
+        m_Rigidbody.AddForce(jump, ForceMode.Impulse);
     }
 
     private void Turn()
