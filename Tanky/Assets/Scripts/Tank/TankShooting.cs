@@ -13,6 +13,7 @@ public class TankShooting : MonoBehaviour
     public float m_MinLaunchForce = 15f;
     public float m_MaxLaunchForce = 30f;
     public float m_MaxChargeTime = 0.75f;
+    public bool m_IsGrounded = false;
 
 
     private string m_FireButton;
@@ -65,9 +66,19 @@ public class TankShooting : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        //m_IsGrounded = m_FireTransform. == 0;
+    }
+
 
     private void Fire()
     {
+        /*if (!isGrounded) // check if the tank is in the air
+        {
+            return; // exit the method without shooting
+        }*/
+
         m_Fired = true;
 
         Rigidbody shellInstance =
